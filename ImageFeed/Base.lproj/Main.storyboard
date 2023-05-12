@@ -29,7 +29,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="186"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="paB-cQ-iW5" userLabel="Cell Image">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="paB-cQ-iW5" userLabel="Cell Image">
                                                     <rect key="frame" x="16" y="4" width="361" height="178"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <userDefinedRuntimeAttributes>
@@ -40,12 +40,12 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11 мая 2023" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mfM-Hs-Ahk" userLabel="Date Label">
-                                                    <rect key="frame" x="28" y="147.66666666666666" width="94" height="19.333333333333343"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <rect key="frame" x="24" y="158.33333333333334" width="74.666666666666671" height="15.666666666666657"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" name="YP White"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="omQ-my-fHM" userLabel="Like Button">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="omQ-my-fHM" userLabel="Like Button">
                                                     <rect key="frame" x="333" y="4" width="44" height="44"/>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="like_active"/>
@@ -53,13 +53,13 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
-                                                <constraint firstAttribute="trailingMargin" secondItem="paB-cQ-iW5" secondAttribute="trailing" id="DyX-cT-rg4"/>
-                                                <constraint firstItem="paB-cQ-iW5" firstAttribute="top" secondItem="QZk-He-nw5" secondAttribute="topMargin" id="Sjx-77-tfp"/>
+                                                <constraint firstAttribute="trailing" secondItem="paB-cQ-iW5" secondAttribute="trailing" constant="16" id="4LX-tl-tla"/>
+                                                <constraint firstAttribute="bottom" secondItem="paB-cQ-iW5" secondAttribute="bottom" constant="4" id="9Vj-cp-6IB"/>
+                                                <constraint firstItem="paB-cQ-iW5" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="mfM-Hs-Ahk" secondAttribute="trailing" constant="8" id="DyX-cT-rg4"/>
+                                                <constraint firstItem="paB-cQ-iW5" firstAttribute="top" secondItem="QZk-He-nw5" secondAttribute="top" constant="4" id="Sjx-77-tfp"/>
                                                 <constraint firstItem="paB-cQ-iW5" firstAttribute="trailing" secondItem="omQ-my-fHM" secondAttribute="trailing" id="aiL-E8-ZeT"/>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="mfM-Hs-Ahk" secondAttribute="trailing" id="baI-Jp-exl"/>
                                                 <constraint firstItem="omQ-my-fHM" firstAttribute="top" secondItem="paB-cQ-iW5" secondAttribute="top" id="cIK-Pw-sWY"/>
-                                                <constraint firstItem="paB-cQ-iW5" firstAttribute="leading" secondItem="QZk-He-nw5" secondAttribute="leadingMargin" id="isn-WC-6iZ"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="paB-cQ-iW5" secondAttribute="bottom" id="k2N-mG-6Zk"/>
+                                                <constraint firstItem="paB-cQ-iW5" firstAttribute="leading" secondItem="QZk-He-nw5" secondAttribute="leading" constant="16" id="isn-WC-6iZ"/>
                                                 <constraint firstItem="mfM-Hs-Ahk" firstAttribute="leading" secondItem="paB-cQ-iW5" secondAttribute="leading" constant="8" id="wRX-Md-pRQ"/>
                                                 <constraint firstItem="paB-cQ-iW5" firstAttribute="bottom" secondItem="mfM-Hs-Ahk" secondAttribute="bottom" constant="8" id="x3k-Mr-VRe"/>
                                             </constraints>
