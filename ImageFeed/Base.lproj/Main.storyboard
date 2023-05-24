@@ -194,64 +194,10 @@
                     <view key="view" contentMode="scaleToFill" id="8MU-Pv-Ypa">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Photo" translatesAutoresizingMaskIntoConstraints="NO" id="CJV-Oo-ULR" userLabel="Userpick Image View">
-                                <rect key="frame" x="16" y="76" width="70" height="70"/>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Екатерина Новикова" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rlx-hy-PGP" userLabel="Name Label">
-                                <rect key="frame" x="16" y="154" width="382" height="27.666666666666657"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="23"/>
-                                <color key="textColor" name="YP White"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@ekaterina_nov" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5F7-eX-4ml" userLabel="Username Label">
-                                <rect key="frame" x="16" y="189.66666666666666" width="382" height="15.666666666666657"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" name="YP Gray"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello, world!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JOJ-el-MdY" userLabel="Description Label">
-                                <rect key="frame" x="16" y="213.33333333333334" width="382" height="15.666666666666657"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" name="YP White"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dSI-R1-jhU" userLabel="Logout Button">
-                                <rect key="frame" x="378" y="99" width="20" height="22"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" image="ipad.and.arrow.forward"/>
-                                <connections>
-                                    <action selector="logoutButton:" destination="64p-tn-y5y" eventType="touchUpInside" id="B71-yb-GcD"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="t6C-5n-mX8"/>
                         <color key="backgroundColor" name="YP Black"/>
-                        <constraints>
-                            <constraint firstItem="JOJ-el-MdY" firstAttribute="leading" secondItem="rlx-hy-PGP" secondAttribute="leading" id="2pa-Rc-xXm"/>
-                            <constraint firstItem="CJV-Oo-ULR" firstAttribute="top" secondItem="t6C-5n-mX8" secondAttribute="top" constant="32" id="6Cu-eO-Qv0"/>
-                            <constraint firstItem="dSI-R1-jhU" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="CJV-Oo-ULR" secondAttribute="trailing" id="7Sk-wS-Wdi"/>
-                            <constraint firstItem="JOJ-el-MdY" firstAttribute="top" secondItem="5F7-eX-4ml" secondAttribute="bottom" constant="8" id="BfC-cY-aCQ"/>
-                            <constraint firstItem="5F7-eX-4ml" firstAttribute="leading" secondItem="rlx-hy-PGP" secondAttribute="leading" id="BzU-u2-fzX"/>
-                            <constraint firstItem="rlx-hy-PGP" firstAttribute="top" secondItem="CJV-Oo-ULR" secondAttribute="bottom" constant="8" id="DhA-gB-stg"/>
-                            <constraint firstItem="t6C-5n-mX8" firstAttribute="trailing" secondItem="rlx-hy-PGP" secondAttribute="trailing" constant="16" id="H1R-qd-pYg"/>
-                            <constraint firstItem="5F7-eX-4ml" firstAttribute="top" secondItem="rlx-hy-PGP" secondAttribute="bottom" constant="8" id="HvL-lM-RaS"/>
-                            <constraint firstItem="rlx-hy-PGP" firstAttribute="leading" secondItem="CJV-Oo-ULR" secondAttribute="leading" id="OiB-wy-reb"/>
-                            <constraint firstItem="t6C-5n-mX8" firstAttribute="trailing" secondItem="dSI-R1-jhU" secondAttribute="trailing" constant="16" id="cdI-Hf-PIM"/>
-                            <constraint firstItem="5F7-eX-4ml" firstAttribute="trailing" secondItem="rlx-hy-PGP" secondAttribute="trailing" id="frI-o5-Y1p"/>
-                            <constraint firstItem="CJV-Oo-ULR" firstAttribute="leading" secondItem="t6C-5n-mX8" secondAttribute="leading" constant="16" id="iEQ-wC-nRW"/>
-                            <constraint firstItem="dSI-R1-jhU" firstAttribute="top" secondItem="t6C-5n-mX8" secondAttribute="top" constant="55" id="jpa-NE-nxp"/>
-                            <constraint firstItem="JOJ-el-MdY" firstAttribute="trailing" secondItem="5F7-eX-4ml" secondAttribute="trailing" id="xN6-4E-Mo6"/>
-                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="" image="tab_profile_active" id="TvW-cW-aBa"/>
-                    <connections>
-                        <outlet property="descriptionLabel" destination="JOJ-el-MdY" id="JgT-SC-UUz"/>
-                        <outlet property="logoutButton" destination="dSI-R1-jhU" id="owE-fU-Sd5"/>
-                        <outlet property="nameLabel" destination="rlx-hy-PGP" id="bYu-OQ-bN2"/>
-                        <outlet property="usernameLabel" destination="5F7-eX-4ml" id="4Tl-C1-EYU"/>
-                        <outlet property="userpickImageView" destination="CJV-Oo-ULR" id="8Vm-Nr-HOs"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Uyr-k7-Wdd" sceneMemberID="firstResponder"/>
             </objects>
@@ -261,17 +207,12 @@
     <resources>
         <image name="0" width="200" height="132"/>
         <image name="Backward" width="24" height="24"/>
-        <image name="Photo" width="70" height="70"/>
         <image name="Sharing" width="50.333332061767578" height="50"/>
-        <image name="ipad.and.arrow.forward" width="20" height="22"/>
         <image name="like_active" width="44" height="44"/>
         <image name="tab_editorial_active" width="30" height="30"/>
         <image name="tab_profile_active" width="30" height="30"/>
         <namedColor name="YP Black">
             <color red="0.10199999809265137" green="0.10599999874830246" blue="0.13300000131130219" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="YP Gray">
-            <color red="0.68199998140335083" green="0.68599998950958252" blue="0.70599997043609619" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="YP White">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
