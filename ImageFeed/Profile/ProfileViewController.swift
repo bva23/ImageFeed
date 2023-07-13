@@ -8,6 +8,8 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
+    private let profileService = ProfileService.shared
+    
     @IBAction private func didTapLogoutButton(_ sender: Any) {
     }
     
@@ -58,8 +60,17 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
+    private func updateProfileDetails(profile: ProfileService.Profile) {
+        guard let profile = profileService().profile else { return }
+        nameLabel.text = profile.name
+        loginNameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        updateProfileDetails(profile: profileService().profile!)
         
         view.addSubview(profileImageView)
         profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
