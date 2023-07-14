@@ -64,30 +64,16 @@ extension SplashViewController: AuthViewControllerDelegate {
             self.fetchOAuthToken(code)
         }
     }
-    /*
-     private func fetchOAuthToken(_ code: String) {
-     oauth2Service.fetchOAuthToken(code) { [weak self] result in
-     guard let self = self else { return }
-     switch result {
-     case .success():
-     self.switchToTabBarController()
-     UIBlockingProgressHUD.dismiss()
-     case .failure:
-     UIBlockingProgressHUD.dismiss()
-     break
-     }
-     }
-     }
-     */
+
     private func fetchOAuthToken(_ code: String) {
         oauth2Service.fetchOAuthToken(code) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let token):
                 self.fetchProfile(token: token)
-            case .failure:
+            case .failure (let error):
                 UIBlockingProgressHUD.dismiss()
-                // TODO [Sprint 11] Показать ошибку
+                self.showAlert(with: error)
                 break
             }
         }
@@ -103,12 +89,23 @@ extension SplashViewController: AuthViewControllerDelegate {
                 DispatchQueue.main.async {
                     self.switchToTabBarController()
                 }
-            case .failure:
+            case .failure (let error):
                 UIBlockingProgressHUD.dismiss()
-                // TODO [Sprint 11] Показать ошибку
+                self.showAlert(with: error)
                 break
             }
         }
+    }
+}
+
+extension SplashViewController {
+    private func showAlert(with error: Error) {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так(",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 

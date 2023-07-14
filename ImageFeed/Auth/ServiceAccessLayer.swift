@@ -66,7 +66,7 @@ private func object(
     completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void
 ) -> URLSessionTask {
     let decoder = JSONDecoder()
-    return urlSession.data(for: request) { (result: Result<Data, Error>) in
+    return urlSession.objectTask(for: request) { (result: Result<Data, Error>) in
         let response = result.flatMap { data -> Result<OAuthTokenResponseBody, Error> in
             Result { try decoder.decode(OAuthTokenResponseBody.self, from: data) }
         }
@@ -114,6 +114,8 @@ enum NetworkError: Error {
     case urlRequestError(Error)
     case urlSessionError
 }
+
+/*
 extension URLSession {
     func data(
         for request: URLRequest,
@@ -143,7 +145,46 @@ extension URLSession {
         task.resume()
         return task
     }
-    
+}
+ */
+    extension URLSession {
+        func objectTask<T: Decodable>(
+            for request: URLRequest,
+            completion: @escaping (Result<T, Error>) -> Void
+        ) -> URLSessionTask {
+            let task = dataTask(with: request, completionHandler: { data, response, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    
+                    guard let httpResponse = response as? HTTPURLResponse else {
+                        let error = NetworkError.urlSessionError
+                        completion(.failure(error))
+                        return
+                    }
+                    
+                    let statusCode = httpResponse.statusCode
+                    guard 200..<300 ~= statusCode else {
+                        let error = NetworkError.httpStatusCode(statusCode)
+                        completion(.failure(error))
+                        return
+                    }
+                    
+                    do {
+                        let decoder = JSONDecoder()
+                        let result = try decoder.decode(T.self, from: data!)
+                        completion(.success(result))
+                    } catch {
+                        completion(.failure(error))
+                    }
+                }
+            })
+            return task
+        }
+    }
+/*
     func profileTask<T: Decodable>(
         for request: URLRequest,
         completion: @escaping (Result<T, Error>) -> Void
@@ -179,4 +220,4 @@ extension URLSession {
         }
         return task
     }
-}
+*/

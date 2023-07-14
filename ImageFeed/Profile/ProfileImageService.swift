@@ -27,7 +27,7 @@ final class ProfileImageService {
         
         let request = urlRequest(token: storageToken.token!, username: username)
         let session = URLSession.shared
-        let task = session.profileTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+        let task = session.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             guard let self = self else { return }
             switch result {
             case .success(let decodedObject):

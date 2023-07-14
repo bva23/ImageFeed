@@ -27,7 +27,7 @@ final class ProfileService {
             URLRequest.makeHTTPRequest(path: "/me", httpMethod: "GET")
         }
         
-        task = urlSession.profileTask(for: profileRequest) { [weak self] (result: Result<ProfileResult, Error>) in
+        task = urlSession.objectTask(for: profileRequest) { [weak self] (result: Result<ProfileResult, Error>) in
             
             DispatchQueue.main.async {
                 guard let self = self else { return }
