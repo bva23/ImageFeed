@@ -9,6 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
     
     @IBAction private func didTapLogoutButton(_ sender: Any) {
     }
@@ -60,17 +61,36 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
-    private func updateProfileDetails(profile: ProfileService.Profile) {
-        guard let profile = profileService().profile else { return }
+    private func updateProfileDetails(profile: Profile) {
+        guard let profile = profileService.profile else { return }
         nameLabel.text = profile.name
         loginNameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
     }
     
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateProfileDetails(profile: profileService().profile!)
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.DidChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
+        
+        updateProfileDetails(profile: profileService.profile!)
         
         view.addSubview(profileImageView)
         profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true

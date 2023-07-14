@@ -8,17 +8,18 @@
 import Foundation
 
 final class OAuth2Service {
-    
+/*
     private init() {}
     
     static func shared() -> OAuth2Service {
         return OAuth2Service()
     }
-    
+*/
+    static let shared = OAuth2Service()
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private var lastCode: String?
-    private var tokenStorage = OAuth2TokenStorage.shared()
+    private var tokenStorage = OAuth2TokenStorage.shared
     private (set) var authToken: String? {
         get {
             return tokenStorage.token
@@ -143,9 +144,9 @@ extension URLSession {
         return task
     }
     
-    func profileTask<Task: Decodable>(
+    func profileTask<T: Decodable>(
         for request: URLRequest,
-        completion: @escaping (Result<Task, Error>) -> Void
+        completion: @escaping (Result<T, Error>) -> Void
     ) -> URLSessionTask {
         let task = dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
@@ -169,7 +170,7 @@ extension URLSession {
                 
                 do {
                     let decoder = JSONDecoder()
-                    let result = try decoder.decode(Task.self, from: data!)
+                    let result = try decoder.decode(T.self, from: data!)
                     completion(.success(result))
                 } catch {
                     completion(.failure(error))

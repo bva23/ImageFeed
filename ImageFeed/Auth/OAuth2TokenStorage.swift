@@ -8,13 +8,14 @@
 import Foundation
 
 class OAuth2TokenStorage {
-    
+/*
     private init() {}
     
     static func shared() -> OAuth2TokenStorage {
         return OAuth2TokenStorage()
     }
-    
+*/
+    static let shared = OAuth2TokenStorage()
     private let tokenKey = "BearerToken"
     
     var token: String? {

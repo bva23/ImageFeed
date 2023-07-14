@@ -11,8 +11,9 @@ import ProgressHUD
 final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
     private let ShowAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
-    private let oauth2Service = OAuth2Service.shared()
-    private let oauth2TokenStorage = OAuth2TokenStorage.shared()
+    private let oauth2Service = OAuth2Service.shared
+    private let oauth2TokenStorage = OAuth2TokenStorage.shared
+    private let profileImageService = ProfileImageService.shared
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -93,12 +94,15 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
     
     private func fetchProfile(token: String) {
-        profileService().fetchProfile(token) { [weak self] result in
+        profileService.fetchProfile(token) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success:
-                UIBlockingProgressHUD.dismiss()
-                self.switchToTabBarController()
+                guard let username = self.profileService.profile?.username else { return }
+                self.profileImageService.fetchProfileImageURL(username: username)  { _ in }
+                DispatchQueue.main.async {
+                    self.switchToTabBarController()
+                }
             case .failure:
                 UIBlockingProgressHUD.dismiss()
                 // TODO [Sprint 11] Показать ошибку
