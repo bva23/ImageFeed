@@ -24,24 +24,21 @@ final class OAuth2Service {
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
-        if task != nil {
-            if lastCode != code {
-                task?.cancel()
-            } else {
-                return
-            }
-        } else {
-            if lastCode == code {
-                return
-            }
-        }
+        if lastCode == code {return}
+        task?.cancel()
         lastCode = code
-        let request = makeRequest(code: code)
-        let task = urlSession.dataTask(with: request) { data, response, error in
+        let request = authTokenRequest(code: code)
+        let task = object(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             DispatchQueue.main.async {
-                completion(.success("\(String(describing: self.authToken))"))
-                self.task = nil
-                if error != nil {
+                guard let self = self else { return }
+                switch result {
+                case .success(let body):
+                    let authToken = body.accessToken
+                    self.authToken = authToken
+                    completion(.success(authToken))
+                    self.task = nil
+                case .failure(let error):
+                    completion(.failure(error))
                     self.lastCode = nil
                 }
             }
@@ -49,13 +46,7 @@ final class OAuth2Service {
         self.task = task
         task.resume()
     }
-    private func makeRequest(code: String) -> URLRequest {
-        guard let url = URL(string: "...\(code)") else { fatalError("Failed to create URL") }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        return request
-    }
-    
+
     private func object(
         for request: URLRequest,
         completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void
@@ -80,18 +71,18 @@ final class OAuth2Service {
             httpMethod: "POST",
             baseURL: URL(string: "https://unsplash.com")!
         ) }
-    
-    private struct OAuthTokenResponseBody: Decodable {
-        let accessToken: String
-        let tokenType: String
-        let scope: String
-        let createdAt: Int
-        enum CodingKeys: String, CodingKey {
-            case accessToken = "access_token"
-            case tokenType = "token_type"
-            case scope
-            case createdAt = "created_at"
-        }
+}
+
+private struct OAuthTokenResponseBody: Decodable {
+    let accessToken: String
+    let tokenType: String
+    let scope: String
+    let createdAt: Int
+    enum CodingKeys: String, CodingKey {
+        case accessToken = "access_token"
+        case tokenType = "token_type"
+        case scope
+        case createdAt = "created_at"
     }
 }
 // MARK: - HTTP Request
