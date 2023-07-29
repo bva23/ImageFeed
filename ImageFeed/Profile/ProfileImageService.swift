@@ -9,57 +9,48 @@ import Foundation
 
 final class ProfileImageService {
     static let shared = ProfileImageService()
-    private (set) var avatarURL: String?
-    private let urlSession = URLSession.shared
-    private var task: URLSessionTask?
-    private let storageToken = OAuth2TokenStorage()
-    static let DidChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    private (set) var avatarURL: URL?
+    private let urlBuilder = URLRequestBuilder.shared
+    private var currentTask: URLSessionTask?
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
-    private func urlRequest(token: String, username: String) -> URLRequest {
-        guard let url = URL(string: "https://api.unsplash.com" + "/users/" + username) else { fatalError("Error") }
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return request
-    }
-    
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchProfileImageURL(userName: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         
-        let request = urlRequest(token: storageToken.token!, username: username)
+        guard let request = makeRequest(userName: userName) else { return }
         let session = URLSession.shared
-        let task = session.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+        let task = session.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             guard let self = self else { return }
             switch result {
-            case .success(let decodedObject):
-                let avatarURL = ProfileImage(decodedData: decodedObject)
-                self.avatarURL = avatarURL.profileImage["small"]
-                completion(.success(self.avatarURL!))
-                NotificationCenter.default
-                    .post(
-                        name: ProfileImageService.DidChangeNotification,
-                        object: self,
-                        userInfo: ["URL": self.avatarURL ?? ""])
+            case .success(let profilePhoto):
+                guard let mediumPhoto = profilePhoto.profileImage?.medium else { return }
+                self.avatarURL = URL(string: mediumPhoto)
+                NotificationCenter.default.post(
+                    name: ProfileImageService.didChangeNotification,
+                    object: self,
+                    userInfo: ["URL": mediumPhoto]
+                )
             case .failure(let error):
                 completion(.failure(error))
             }
+            self.currentTask = nil
         }
-        self.task = task
+        self.currentTask = task
         task.resume()
+    }
+    
+    private func makeRequest(userName: String) -> URLRequest? {
+        urlBuilder.makeHTTPRequest(path: "/users/\(userName)",
+                                   httpMethod: "GET",
+                                   baseURLString: Constants.defaultApiBaseURLString
+        )
     }
 }
 
 struct UserResult: Codable {
-    let profileImage: [String:String]
+    let profileImage: [String: String]
     
     enum CodingKeys: String, CodingKey {
         case profileImage = "profile_image"
-    }
-}
-
-struct ProfileImage: Codable {
-    let profileImage: [String:String]
-    
-    init(decodedData: UserResult) {
-        self.profileImage = decodedData.profileImage
     }
 }

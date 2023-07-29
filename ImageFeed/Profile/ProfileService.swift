@@ -9,61 +9,46 @@ import Foundation
 
 final class ProfileService {
     static let shared = ProfileService()
-    
-    var task: URLSessionTask?
+    private var currentTask: URLSessionTask?
+    private let builder: URLRequestBuilder
     var urlSession = URLSession.shared
     private(set) var profile: Profile?
-
-    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
-        assert(Thread.isMainThread)
+    
+    init(builder: URLRequestBuilder = .shared) {
+        self.builder = builder
+    }
+    
+    func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) {
+        currentTask?.cancel()
         
-        let request = makeRequest(token: token)
+        
+        guard let request = makeFetchProfileRequest() else {
+            assertionFailure("Invalid request")
+            completion(.failure(NetworkError.invalidRequest))
+            return
+        }
+        
         let session = URLSession.shared
-        let task = session.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
-            switch result {
-            case .success(let decodedObject):
-                let profile = Profile(decodedData: decodedObject)
+        
+        currentTask = session.objectTask(for: request) {
+            [weak self] (response: Result<ProfileResult, Error>) in
+            self?.currentTask = nil
+            switch response {
+            case .success(let profileResult):
+                let profile = Profile(result: profileResult)
                 self?.profile = profile
                 completion(.success(profile))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
-        self.task = task
-        task.resume()
     }
-    
-    private func makeRequest(token: String) -> URLRequest {
-        guard let url = URL(string: "\(defaultBaseUrl)" + "/me") else { fatalError("Failed to create URL") }
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return request
+    private func makeFetchProfileRequest() -> URLRequest? {
+        builder.makeHTTPRequest(
+            path: "/me",
+            httpMethod: "GET",
+            baseURLString: Constants.defaultApiBaseURLString
+        )
     }
 }
 
-struct ProfileResult: Codable {
-    let username: String
-    let firstName: String?
-    let lastName: String?
-    let bio: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case username
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case bio
-    }
-}
-struct Profile: Codable {
-    let username: String
-    let name: String?
-    let loginName: String
-    let bio: String?
-    
-    init(decodedData: ProfileResult) {
-        self.username = decodedData.username
-        self.name = (decodedData.firstName ?? "") + " " + (decodedData.lastName ?? "")
-        self.loginName = "@" + (decodedData.username )
-        self.bio = decodedData.bio
-    }
-}

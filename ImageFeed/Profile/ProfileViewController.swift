@@ -10,6 +10,7 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     
     @IBAction private func didTapLogoutButton(_ sender: Any) {
@@ -69,35 +70,53 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.text = profile.bio
     }
     
-    private func updateAvatar() {
+    @objc
+    private func updateAvatar(notification: Notification) {
         guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
+            isViewLoaded,
+            let userInfo = notification.userInfo,
+            let profileImageURL = userInfo["URL"] as? String,
             let url = URL(string: profileImageURL)
         else { return }
         
-        let processor = RoundCornerImageProcessor(cornerRadius: profileImageView.frame.width)
+        updateAvatar(url: url)
+    }
+    
+    private func updateAvatar(url: URL) {
         profileImageView.kf.indicatorType = .activity
-        profileImageView.kf.setImage(with: url,
-                              placeholder: UIImage(named: "person.crop.circle.fill.png"),
-                              options: [.processor(processor),.cacheSerializer(FormatIndicatedCacheSerializer.png)])
-        let cache = ImageCache.default
-        cache.clearDiskCache()
-        cache.clearMemoryCache()
+        let processor = RoundCornerImageProcessor(cornerRadius: profileImageView.frame.width)
+        profileImageView.kf.setImage(with: url, options: [.processor(processor)])
+        
+//                guard
+//                    let profileImageURL = ProfileImageService.shared.avatarURL
+//                    let url = URL(string: profileImageURL)
+//                else { return }
+        
+//                let processor = RoundCornerImageProcessor(cornerRadius: profileImageView.frame.width)
+//                profileImageView.kf.indicatorType = .activity
+//                profileImageView.kf.setImage(with: url,
+//                                      placeholder: UIImage(named: "person.crop.circle.fill.png"),
+//                                      options: [.processor(processor),.cacheSerializer(FormatIndicatedCacheSerializer.png)])
+//                let cache = ImageCache.default
+//                cache.clearDiskCache()
+//                cache.clearMemoryCache()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.DidChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()
-            }
-        updateAvatar()
+        if let url = ProfileImageService.shared.avatarURL {
+            updateAvatar(url: url)
+        }
+        
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self = self else { return }
+            self.updateAvatar(notification: notification)
+        }
         
         updateProfileDetails(profile: profileService.profile!)
         
@@ -122,5 +141,18 @@ final class ProfileViewController: UIViewController {
         view.addSubview(logoutButton)
         logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         logoutButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let profile = ProfileService.shared.profile else {
+            assertionFailure("no saved profile")
+            return }
+        
+        self.nameLabel.text = profile.name
+        self.descriptionLabel.text = profile.bio
+        self.loginNameLabel.text = profile.loginName
+        
+        profileImageService.fetchProfileImageURL(userName: profile.username) { _ in }
     }
 }

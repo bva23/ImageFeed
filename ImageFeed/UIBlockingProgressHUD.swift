@@ -15,12 +15,16 @@ final class UIBlockingProgressHUD {
     
     static func show() {
         window?.isUserInteractionEnabled = false
+        setup()
         ProgressHUD.show()
     }
-
+    
     static func dismiss() {
         window?.isUserInteractionEnabled = true
         ProgressHUD.dismiss()
     }
     
+    static func setup() {
+        ProgressHUD.colorBackground.cgColor
+    }
 }
