@@ -32,6 +32,7 @@
 		E7A197FA2A1CFB910022EC1D /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A197F92A1CFB910022EC1D /* UIColor+Extensions.swift */; };
 		E7A5851A2A715F6B00802732 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A585192A715F6B00802732 /* AlertPresenter.swift */; };
 		E7A987762A58151900CF7FFD /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A987752A58151900CF7FFD /* ProfileService.swift */; };
+		E7B317E62A752300003186DB /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B317E52A752300003186DB /* TabBarController.swift */; };
 		E7B53C222A160D4A004925C1 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B53C212A160D4A004925C1 /* SingleImageViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +61,7 @@
 		E7A197F92A1CFB910022EC1D /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		E7A585192A715F6B00802732 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
 		E7A987752A58151900CF7FFD /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		E7B317E52A752300003186DB /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		E7B53C212A160D4A004925C1 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -110,6 +112,7 @@
 				E74BC8E229FCF7930059C572 /* Info.plist */,
 				E732BAC92A57F12C00030BCA /* UIBlockingProgressHUD.swift */,
 				E7A585192A715F6B00802732 /* AlertPresenter.swift */,
+				E7B317E52A752300003186DB /* TabBarController.swift */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				E775F3B52A52F0A70037CFA6 /* OAuth2TokenStorage.swift in Sources */,
 				E7A5851A2A715F6B00802732 /* AlertPresenter.swift in Sources */,
 				E791B6FE2A2490780088B4D9 /* Constants.swift in Sources */,
+				E7B317E62A752300003186DB /* TabBarController.swift in Sources */,
 				E732BACA2A57F12C00030BCA /* UIBlockingProgressHUD.swift in Sources */,
 				E7A987762A58151900CF7FFD /* ProfileService.swift in Sources */,
 			);

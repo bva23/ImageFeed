@@ -17,7 +17,7 @@ final class ProfileViewController: UIViewController {
     }
     
     @IBOutlet private lazy var profileImageView: UIImageView! = {
-        let userpickImage = UIImage(named: "Photo")
+        let userpickImage = UIImage()
         let imageView = UIImageView(image: userpickImage)
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false

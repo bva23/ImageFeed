@@ -6,15 +6,15 @@
 //
 
 import UIKit
-// import ProgressHUD
 
 final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
-    private let ShowAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     private let authService = OAuth2Service.shared
     private let oauth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
     private let alertPresenter = AlertPresenter()
+    
+    private var splashScreenLogoImageView: UIImageView!
     private var wasChecked: Bool = false
     
     override func viewDidLoad() {
@@ -30,6 +30,18 @@ final class SplashViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNeedsStatusBarAppearanceUpdate()
+        
+        view.backgroundColor = .ypBlack
+        
+        splashScreenLogoImageView = UIImageView()
+        splashScreenLogoImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(splashScreenLogoImageView)
+        splashScreenLogoImageView.image = UIImage(named: "splash_screen_logo")
+        
+        NSLayoutConstraint.activate([
+            splashScreenLogoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            splashScreenLogoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -79,19 +91,6 @@ final class SplashViewController: UIViewController {
         window.rootViewController = tabBarController
     }
 }
-extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == ShowAuthenticationScreenSegueIdentifier {
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else { fatalError("Failed to prepare for \(ShowAuthenticationScreenSegueIdentifier)") }
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-}
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
@@ -132,7 +131,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     private func showLoginAlert(error: Error) {
         alertPresenter.showAlert(title: "Что-то пошло не так :(",
                                  message: "Не удалось войти в систему, \(error.localizedDescription)") {
-            self.performSegue(withIdentifier: self.ShowAuthenticationScreenSegueIdentifier, sender: nil)
+            self.showAuthController()
         }
     }
 }
