@@ -12,7 +12,6 @@ final class URLRequestBuilder {
     static let shared = URLRequestBuilder()
     
     private let storage: OAuth2TokenStorage
-    
     init(storage: OAuth2TokenStorage = .shared) {
         self.storage = storage
     }

@@ -9,7 +9,7 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
-    private let authService = OAuth2Service.shared
+    private let authService = OAuth2Service()
     private let oauth2TokenStorage = OAuth2TokenStorage.shared
     private let profileImageService = ProfileImageService.shared
     private let alertPresenter = AlertPresenter()
@@ -29,7 +29,6 @@ final class SplashViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setNeedsStatusBarAppearanceUpdate()
         
         view.backgroundColor = .ypBlack
         

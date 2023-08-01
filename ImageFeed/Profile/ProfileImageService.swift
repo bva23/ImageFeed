@@ -9,6 +9,8 @@ import Foundation
 
 final class ProfileImageService {
     static let shared = ProfileImageService()
+    private init() {}
+    
     private (set) var avatarURL: URL?
     private let urlBuilder = URLRequestBuilder.shared
     private var currentTask: URLSessionTask?

@@ -8,7 +8,6 @@
 import Foundation
 
 final class OAuth2Service {
-    static let shared = OAuth2Service()
     private var urlSession = URLSession.shared
     private var currentTask: URLSessionTask?
     private var lastCode: String?
@@ -30,12 +29,11 @@ final class OAuth2Service {
     }
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        
-        guard !(code == lastCode && currentTask != nil) else {
-            return
-        }
-        
+        assert(Thread.isMainThread)
+        if lastCode == code { return }
+        currentTask?.cancel()
         lastCode = code
+        
         guard let request = authTokenRequest(code: code) else {
             assertionFailure("Invalid request")
             completion(.failure(NetworkError.invalidRequest))
@@ -43,6 +41,7 @@ final class OAuth2Service {
         }
         
         let session = URLSession.shared
+        
         currentTask = session.objectTask(for: request) {
             [weak self] (response: Result<OAuthTokenResponseBody, Error>) in
             

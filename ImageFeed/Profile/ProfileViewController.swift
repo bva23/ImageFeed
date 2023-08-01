@@ -84,22 +84,7 @@ final class ProfileViewController: UIViewController {
     
     private func updateAvatar(url: URL) {
         profileImageView.kf.indicatorType = .activity
-        let processor = RoundCornerImageProcessor(cornerRadius: profileImageView.frame.width)
-        profileImageView.kf.setImage(with: url, options: [.processor(processor)])
-        
-//                guard
-//                    let profileImageURL = ProfileImageService.shared.avatarURL
-//                    let url = URL(string: profileImageURL)
-//                else { return }
-        
-//                let processor = RoundCornerImageProcessor(cornerRadius: profileImageView.frame.width)
-//                profileImageView.kf.indicatorType = .activity
-//                profileImageView.kf.setImage(with: url,
-//                                      placeholder: UIImage(named: "person.crop.circle.fill.png"),
-//                                      options: [.processor(processor),.cacheSerializer(FormatIndicatedCacheSerializer.png)])
-//                let cache = ImageCache.default
-//                cache.clearDiskCache()
-//                cache.clearMemoryCache()
+        profileImageView.kf.setImage(with: url)
     }
     
     override func viewDidLoad() {
@@ -114,8 +99,7 @@ final class ProfileViewController: UIViewController {
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            guard let self = self else { return }
-            self.updateAvatar(notification: notification)
+            self?.updateAvatar(notification: notification)
         }
         
         updateProfileDetails(profile: profileService.profile!)
@@ -125,6 +109,9 @@ final class ProfileViewController: UIViewController {
         profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        profileImageView.layer.cornerRadius = 35
+        profileImageView.clipsToBounds = true
+        
         
         view.addSubview(nameLabel)
         nameLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor).isActive = true
