@@ -6,13 +6,18 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     @IBAction private func didTapLogoutButton(_ sender: Any) {
     }
     
     @IBOutlet private lazy var profileImageView: UIImageView! = {
-        let userpickImage = UIImage(named: "Photo")
+        let userpickImage = UIImage()
         let imageView = UIImageView(image: userpickImage)
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -58,14 +63,55 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
+    private func updateProfileDetails(profile: Profile) {
+        guard let profile = profileService.profile else { return }
+        nameLabel.text = profile.name
+        loginNameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
+    
+    @objc
+    private func updateAvatar(notification: Notification) {
+        guard
+            isViewLoaded,
+            let userInfo = notification.userInfo,
+            let profileImageURL = userInfo["URL"] as? String,
+            let url = URL(string: profileImageURL)
+        else { return }
+        
+        updateAvatar(url: url)
+    }
+    
+    private func updateAvatar(url: URL) {
+        profileImageView.kf.indicatorType = .activity
+        profileImageView.kf.setImage(with: url)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let url = ProfileImageService.shared.avatarURL {
+            updateAvatar(url: url)
+        }
+        
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            self?.updateAvatar(notification: notification)
+        }
+        
+        updateProfileDetails(profile: profileService.profile!)
         
         view.addSubview(profileImageView)
         profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        profileImageView.layer.cornerRadius = 35
+        profileImageView.clipsToBounds = true
+        
         
         view.addSubview(nameLabel)
         nameLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor).isActive = true
@@ -78,9 +124,22 @@ final class ProfileViewController: UIViewController {
         view.addSubview(descriptionLabel)
         descriptionLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor).isActive = true
         descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8).isActive = true
-
+        
         view.addSubview(logoutButton)
         logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         logoutButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let profile = ProfileService.shared.profile else {
+            assertionFailure("no saved profile")
+            return }
+        
+        self.nameLabel.text = profile.name
+        self.descriptionLabel.text = profile.bio
+        self.loginNameLabel.text = profile.loginName
+        
+        profileImageService.fetchProfileImageURL(userName: profile.username) { _ in }
     }
 }
