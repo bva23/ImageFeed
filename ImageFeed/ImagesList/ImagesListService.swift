@@ -8,6 +8,8 @@
 import Foundation
 
 final class ImagesListService {
+    static let shared = ImagesListService()
+    
     private (set) var photos: [Photo] = []
     private var lastLoadedPage: Int?
     private var task: URLSessionTask?
@@ -19,16 +21,19 @@ final class ImagesListService {
     static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
     func fetchPhotosNextPage() {
-        let nextPage = lastLoadedPage == nil
-        ? 1
-        : lastLoadedPage! + 1
-        
         assert(Thread.isMainThread)
         if task != nil {
             task?.cancel()
         }
         
-        let request = photosRequest(page: nextPage, perPage: 10)!
+        let nextPage = lastLoadedPage == nil
+        ? 1
+        : lastLoadedPage! + 1
+        
+        guard let token = OAuth2TokenStorage.shared.token else { return }
+        
+        var request = photosRequest(token: token, page: nextPage, perPage: 10)!
+        
         let task = URLSession.shared.objectTask(for: request ) { [weak self] (result: Result<[PhotoResult], Error>) in
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
@@ -59,14 +64,16 @@ final class ImagesListService {
         self.task = task
         task.resume()
         
-        func photosRequest(page: Int, perPage: Int) -> URLRequest? {
-            urlBuilder.makeHTTPRequest(
+        func photosRequest(token: String, page: Int, perPage: Int) -> URLRequest? {
+            var request = urlBuilder.makeHTTPRequest(
                 path: "/photos?"
                 + "page=\(page)"
                 + "&&per_page=\(perPage)",
                 httpMethod: "GET",
                 baseURLString: Constants.defaultApiBaseURLString
             )
+            request?.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            return request
         }
     }
 }
