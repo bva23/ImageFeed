@@ -14,7 +14,7 @@ final class ImagesListViewController: UIViewController {
     
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     
-    private lazy var dateFormatter: DateFormatter = {
+    lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .none
@@ -85,3 +85,15 @@ extension ImagesListViewController: UITableViewDataSource {
         return imageListCell
     }
 }
+
+//extension ImagesListViewController {
+//    func tableView(
+//      _ tableView: UITableView,
+//      willDisplay cell: UITableViewCell,
+//      forRowAt indexPath: IndexPath
+//    ) {
+//        if indexPath.row + 1 == photos.count {
+//            fetchPhotosNextPage()
+//        }
+//    }
+//}
