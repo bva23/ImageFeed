@@ -21,4 +21,11 @@ class OAuth2TokenStorage {
             keychainWrapper.set(newValue, forKey: Constants.bearerToken)
         }
     }
+    
+    func removeToken() {
+        let isSuccess = KeychainWrapper.standard.removeObject(forKey: Constants.bearerToken)
+        if !isSuccess {
+            print("Ошибка удаления токена")
+        }
+    }
 }

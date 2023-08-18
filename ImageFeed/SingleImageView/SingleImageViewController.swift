@@ -12,19 +12,31 @@ final class SingleImageViewController: UIViewController {
         didSet {
             guard isViewLoaded else { return }
             imageView.image = image
-            rescaleAndCenterImageInScrollView(image: image)
         }
     }
+    var imageUrl: URL?
     
-    @IBOutlet private var imageView: UIImageView!
-    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var scrollView: UIScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageView.image = image
-        rescaleAndCenterImageInScrollView(image: image)
-        scrollView.minimumZoomScale = 0.1
-        scrollView.maximumZoomScale = 1.25
+        guard let imageUrl = imageUrl else { return }
+        UIBlockingProgressHUD.show()
+        imageView.kf.setImage(with: imageUrl) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let imageResult):
+                UIBlockingProgressHUD.dismiss()
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+                scrollView.minimumZoomScale = 0.1
+                scrollView.maximumZoomScale = 1.25
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                assertionFailure("Не удалось загрузить изображение")
+                return
+            }
+        }
     }
     
     @IBAction func didTapBackButton(_ sender: UIButton) {
@@ -33,7 +45,7 @@ final class SingleImageViewController: UIViewController {
     
     @IBAction func didTapShareButton(_ sender: UIButton) {
         let share = UIActivityViewController(
-            activityItems: [image],
+            activityItems: [image as Any],
             applicationActivities: nil
         )
         present(share, animated: true, completion: nil)
@@ -59,6 +71,23 @@ final class SingleImageViewController: UIViewController {
 
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        imageView
+        return imageView // Нужен ли здесь return?
+    }
+    
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        centerImageInScrollView()
+    }
+    
+    private func centerImageInScrollView() {
+        guard let imageView = imageView else { return }
+        let imageSize = imageView.frame.size
+        let scrollSize = scrollView.bounds.size
+        let verticalInset = imageSize.height < scrollSize.height ? (scrollSize.height - imageSize.height) / 2 : 0
+        let horizontalInset = imageSize.width < scrollSize.width ? (scrollSize.width - imageSize.width) / 2 : 0
+        let contentInset = UIEdgeInsets(top: verticalInset,
+                                        left: horizontalInset,
+                                        bottom: verticalInset,
+                                        right: horizontalInset)
+        scrollView.contentInset = contentInset
     }
 }

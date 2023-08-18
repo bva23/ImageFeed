@@ -12,5 +12,26 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet var dateLabel: UILabel!
     @IBOutlet var likeButton: UIButton!
     
+    weak var delegate: ImagesListCellDelegate?
+    
+    @IBAction func likeButtonClicked(_ sender: Any) {
+        delegate?.imageListCellDidTapLike(self)
+    }
+    
     static let reuseIdentifier = "ImagesListCell"
+    
+    private enum LikePhoto: String {
+        case likeActive = "like_active"
+        case likeInactive = "like_inactive"
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cellImage.kf.cancelDownloadTask()
+    }
+    
+    func setIsLiked(isLiked: Bool) {
+        let likePhoto = isLiked ? UIImage(named: "like_active") : UIImage(named: "like_inactive")
+        likeButton.setImage(likePhoto, for: .normal)
+    }
 }
