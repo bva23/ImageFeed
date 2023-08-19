@@ -18,12 +18,12 @@ final class ImagesListViewController: UIViewController {
     
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     
-    let placeholderImage = UIImage(named: "stub")
+    private let placeholderImage = UIImage(named: "stub")
     
     private var photos: [Photo] = []
     private var imagesListServiceObserver: NSObjectProtocol?
     
-    lazy var dateFormatter: DateFormatter = {
+    private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .none
@@ -94,6 +94,8 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - UITableViewDataSource
+
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return photos.count
@@ -111,6 +113,8 @@ extension ImagesListViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - tableView
+
 extension ImagesListViewController {
     func tableView(
         _ tableView: UITableView,
@@ -122,6 +126,8 @@ extension ImagesListViewController {
         }
     }
 }
+
+// MARK: - updateTableViewAnimated
 
 extension ImagesListViewController {
     private func updateTableViewAnimated() {
@@ -139,6 +145,8 @@ extension ImagesListViewController {
         }
     }
 }
+
+// MARK: - ImagesListCellDelegate
 
 extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
