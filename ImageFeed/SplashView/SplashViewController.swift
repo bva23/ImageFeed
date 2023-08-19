@@ -128,7 +128,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
     
     private func showLoginAlert(error: Error) {
-        alertPresenter.showAlert(title: "Что-то пошло не так :(",
+        alertPresenter.showAlert(title: "Что-то пошло не так (",
                                  message: "Не удалось войти в систему, \(error.localizedDescription)") {
             self.showAuthController()
         }

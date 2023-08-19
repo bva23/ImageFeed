@@ -7,13 +7,34 @@
 
 import UIKit
 import Kingfisher
+import WebKit
 
 final class ProfileViewController: UIViewController {
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+    private let authService = OAuth2Service()
+    private let alertPresenter = AlertPresenter()
     private var profileImageServiceObserver: NSObjectProtocol?
+    static let LogoutNotification = Notification.Name(rawValue: "Logoutcompleted")
     
     @IBAction private func didTapLogoutButton(_ sender: Any) {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert)
+        
+        let confirmExitAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            self.clean()
+            self.present(SplashViewController(), animated: true, completion: nil)
+        }
+        
+        let cancelExitAction = UIAlertAction(title: "Нет", style: .default) { _ in }
+        
+        alert.addAction(confirmExitAction)
+        alert.addAction(cancelExitAction)
+        
+        self.present(alert, animated: true)
     }
     
     @IBOutlet private lazy var profileImageView: UIImageView! = {
@@ -141,5 +162,16 @@ final class ProfileViewController: UIViewController {
         self.loginNameLabel.text = profile.loginName
         
         profileImageService.fetchProfileImageURL(userName: profile.username) { _ in }
+    }
+    
+    private func clean() {
+        let tokenStorage = OAuth2TokenStorage.shared
+        tokenStorage.removeToken()
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            records.forEach { record in
+                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+            }
+        }
     }
 }
