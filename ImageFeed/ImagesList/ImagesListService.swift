@@ -72,7 +72,7 @@ final class ImagesListService {
             + "page=\(page)"
             + "&&per_page=\(perPage)",
             httpMethod: "GET",
-            baseURLString: Constants.defaultApiBaseURLString
+            baseURLString: Constants.DefaultBaseURL
         )
         request?.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
@@ -114,7 +114,7 @@ final class ImagesListService {
             var request = urlBuilder.makeHTTPRequest(
                 path: "/photos/\(photoId)/like",
                 httpMethod: isLike ? "POST" : "DELETE",
-                baseURLString: Constants.defaultApiBaseURLString
+                baseURLString: Constants.DefaultBaseURL
             )
             request?.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             return request
