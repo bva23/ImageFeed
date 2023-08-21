@@ -23,7 +23,7 @@ class AuthHelper: AuthHelperProtocol {
         let url = authURL()
         return URLRequest(url: url)
     }
-
+    
     func authURL() -> URL {
         var urlComponents = URLComponents(string: configuration.authURLString)!
         urlComponents.queryItems = [

@@ -18,10 +18,10 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     lazy var presenter: ProfilePresenterProtocol = ProfileViewPresenter(view: self)
     
     private let alertPresenter = AlertPresenter()
-
+    
     @IBAction private func didTapLogoutButton(_ sender: Any) {
         let alert = UIAlertController(
-            title: "Пока, пока!",
+            title: "До новых встреч!",
             message: "Уверены, что хотите выйти?",
             preferredStyle: .alert)
         
@@ -143,6 +143,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         view.addSubview(logoutButton)
         logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         logoutButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+        logoutButton.accessibilityIdentifier = "LogoutButton"
         
         presenter.viewDidLoad()
     }
@@ -156,9 +157,5 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         self.nameLabel.text = profile.name
         self.descriptionLabel.text = profile.bio
         self.loginNameLabel.text = profile.loginName
-        
-        // profileImageService.fetchProfileImageURL(userName: profile.username) { _ in }
     }
-    
-
 }

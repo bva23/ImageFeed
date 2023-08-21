@@ -38,7 +38,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        webView.accessibilityIdentifier = "UnsplashWebView"
         webView.navigationDelegate = self
         presenter?.viewDidLoad()
         //        webView.load(request)
@@ -52,11 +52,6 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
     }
-    
-    //    private func updateProgress() {
-    //        progressView.progress = Float(webView.estimatedProgress)
-    //        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
-    //    }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(WKWebView.estimatedProgress) {

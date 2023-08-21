@@ -39,7 +39,7 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     }()
     
     override func viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         presenter = ImagesListPresenter(view: self)
         presenter?.viewDidLoad()
@@ -115,10 +115,6 @@ extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         presenter?.didTapLike(for: cell)
     }
-    
-//    func imagesListCellDidTapLike(_ cell: ImagesListCell) {
-//        presenter?.didTapLike(for: cell)
-//    }
 }
 
 // MARK: - UITableViewDataSource
@@ -145,53 +141,3 @@ func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forR
         ImagesListService.shared.fetchPhotosNextPage()
     }
 }
-
-
-// MARK: - updateTableViewAnimated
-//
-//extension ImagesListViewController {
-//    private func updateTableViewAnimated() {
-//        let oldCount = photos.count
-//        let newCount = imagesListService.photos.count
-//        photos = imagesListService.photos
-//
-//        if oldCount != newCount {
-//            tableView.performBatchUpdates {
-//                let indexPaths = (oldCount..<newCount).map { i in
-//                    IndexPath(row: i, section: 0)
-//                }
-//                tableView.insertRows(at: indexPaths, with: .automatic)
-//            } completion: { _ in }
-//        }
-//    }
-//}
-//
-// MARK: - ImagesListCellDelegate
-//
-//extension ImagesListViewController: ImagesListCellDelegate {
-//    func imageListCellDidTapLike(_ cell: ImagesListCell) {
-//        guard let indexPath = tableView.indexPath(for: cell) else { return }
-//        let photo = photos[indexPath.row]
-//
-//        UIBlockingProgressHUD.show()
-//
-//        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success():
-//                self.photos = self.imagesListService.photos
-//                cell.setIsLiked(isLiked: self.photos[indexPath.row].isLiked)
-//                UIBlockingProgressHUD.dismiss()
-//            case .failure(let error):
-//                UIBlockingProgressHUD.dismiss()
-//                let alert = UIAlertController(
-//                    title: "Ошибка",
-//                    message: "\(error.localizedDescription)",
-//                    preferredStyle: .alert)
-//                let action = UIAlertAction(title: "OK", style: .default)
-//                alert.addAction(action)
-//                self.present(alert, animated: true, completion: nil)
-//            }
-//        }
-//    }
-//}
