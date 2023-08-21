@@ -9,14 +9,16 @@ import UIKit
 import Kingfisher
 import WebKit
 
-final class ProfileViewController: UIViewController {
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private let authService = OAuth2Service()
-    private let alertPresenter = AlertPresenter()
-    private var profileImageServiceObserver: NSObjectProtocol?
-    static let LogoutNotification = Notification.Name(rawValue: "Logoutcompleted")
+protocol ProfileViewControllerProtocol: AnyObject {
+    func updateAvatar(url: URL?)
+    func updateProfileDetails(profile: Profile?)
+}
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
+    lazy var presenter: ProfilePresenterProtocol = ProfileViewPresenter(view: self)
     
+    private let alertPresenter = AlertPresenter()
+
     @IBAction private func didTapLogoutButton(_ sender: Any) {
         let alert = UIAlertController(
             title: "Пока, пока!",
@@ -25,7 +27,7 @@ final class ProfileViewController: UIViewController {
         
         let confirmExitAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.clean()
+            presenter.clean()
             self.present(SplashViewController(), animated: true, completion: nil)
         }
         
@@ -84,8 +86,8 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
-    private func updateProfileDetails(profile: Profile) {
-        guard let profile = profileService.profile else { return }
+    internal func updateProfileDetails(profile: Profile?) {
+        guard let profile else { return }
         nameLabel.text = profile.name
         loginNameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
@@ -103,9 +105,11 @@ final class ProfileViewController: UIViewController {
         updateAvatar(url: url)
     }
     
-    private func updateAvatar(url: URL) {
+    func updateAvatar(url: URL?) {
+        guard let url else { return }
+        let placeholderImage = UIImage(systemName: "no_avatar")
         profileImageView.kf.indicatorType = .activity
-        profileImageView.kf.setImage(with: url)
+        profileImageView.kf.setImage(with: url, placeholder: placeholderImage)
     }
     
     override func viewDidLoad() {
@@ -114,16 +118,6 @@ final class ProfileViewController: UIViewController {
         if let url = ProfileImageService.shared.avatarURL {
             updateAvatar(url: url)
         }
-        
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] notification in
-            self?.updateAvatar(notification: notification)
-        }
-        
-        updateProfileDetails(profile: profileService.profile!)
         
         view.addSubview(profileImageView)
         profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
@@ -149,6 +143,8 @@ final class ProfileViewController: UIViewController {
         view.addSubview(logoutButton)
         logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         logoutButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+        
+        presenter.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -161,17 +157,8 @@ final class ProfileViewController: UIViewController {
         self.descriptionLabel.text = profile.bio
         self.loginNameLabel.text = profile.loginName
         
-        profileImageService.fetchProfileImageURL(userName: profile.username) { _ in }
+        // profileImageService.fetchProfileImageURL(userName: profile.username) { _ in }
     }
     
-    private func clean() {
-        let tokenStorage = OAuth2TokenStorage.shared
-        tokenStorage.removeToken()
-        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-            records.forEach { record in
-                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-            }
-        }
-    }
+
 }
