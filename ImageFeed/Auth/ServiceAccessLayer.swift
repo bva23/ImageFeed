@@ -45,6 +45,8 @@ enum NetworkError: Error {
     case invalidRequest
 }
 
+// MARK: - objectTask
+
 extension URLSession {
     func objectTask<T: Decodable>(
         for request: URLRequest,

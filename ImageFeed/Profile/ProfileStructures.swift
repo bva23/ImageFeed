@@ -36,6 +36,8 @@ struct Profile: Codable {
     let bio: String?
 }
 
+// MARK: - Profile init
+
 extension Profile {
     init(result profile: ProfileResult) {
         self.init(

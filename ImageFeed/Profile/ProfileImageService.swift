@@ -44,7 +44,7 @@ final class ProfileImageService {
     private func makeRequest(userName: String) -> URLRequest? {
         urlBuilder.makeHTTPRequest(path: "/users/\(userName)",
                                    httpMethod: "GET",
-                                   baseURLString: Constants.defaultApiBaseURLString
+                                   baseURLString: Constants.DefaultBaseURL
         )
     }
 }

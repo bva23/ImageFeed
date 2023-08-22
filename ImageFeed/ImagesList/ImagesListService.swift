@@ -7,8 +7,15 @@
 
 import Foundation
 
-final class ImagesListService {
+protocol ImagesListServiceProtocol {
+    var photos: [Photo] { get }
+    func fetchPhotosNextPage()
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void)
+}
+
+final class ImagesListService: ImagesListServiceProtocol {
     static let shared = ImagesListService()
+    private init() {}
     
     private (set) var photos: [Photo] = []
     private var lastLoadedPage: Int = 0
@@ -57,7 +64,7 @@ final class ImagesListService {
         return photoResult.map {
             Photo(id: $0.id,
                   size: CGSize(width: $0.width, height: $0.height),
-                  createdAt: ISO8601DateFormatter().date(from: $0.createdAt),
+                  createdAt: dateFormatter.date(from: $0.createdAt),
                   welcomeDescription: $0.welcomeDescription,
                   thumbImageURL: $0.urls.thumbImageURL,
                   largeImageURL: $0.urls.largeImageURL,
@@ -71,7 +78,7 @@ final class ImagesListService {
             + "page=\(page)"
             + "&&per_page=\(perPage)",
             httpMethod: "GET",
-            baseURLString: Constants.defaultApiBaseURLString
+            baseURLString: Constants.DefaultBaseURL
         )
         request?.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
@@ -113,7 +120,7 @@ final class ImagesListService {
             var request = urlBuilder.makeHTTPRequest(
                 path: "/photos/\(photoId)/like",
                 httpMethod: isLike ? "POST" : "DELETE",
-                baseURLString: Constants.defaultApiBaseURLString
+                baseURLString: Constants.DefaultBaseURL
             )
             request?.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             return request
