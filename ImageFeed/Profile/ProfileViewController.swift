@@ -19,26 +19,6 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     private let alertPresenter = AlertPresenter()
     
-    @IBAction private func didTapLogoutButton(_ sender: Any) {
-        let alert = UIAlertController(
-            title: "До новых встреч!",
-            message: "Уверены, что хотите выйти?",
-            preferredStyle: .alert)
-        
-        let confirmExitAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            presenter.clean()
-            self.present(SplashViewController(), animated: true, completion: nil)
-        }
-        
-        let cancelExitAction = UIAlertAction(title: "Нет", style: .default) { _ in }
-        
-        alert.addAction(confirmExitAction)
-        alert.addAction(cancelExitAction)
-        
-        self.present(alert, animated: true)
-    }
-    
     @IBOutlet private lazy var profileImageView: UIImageView! = {
         let userpickImage = UIImage()
         let imageView = UIImageView(image: userpickImage)
@@ -86,7 +66,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         return button
     }()
     
-    internal func updateProfileDetails(profile: Profile?) {
+    func updateProfileDetails(profile: Profile?) {
         guard let profile else { return }
         nameLabel.text = profile.name
         loginNameLabel.text = profile.loginName
@@ -157,5 +137,25 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         self.nameLabel.text = profile.name
         self.descriptionLabel.text = profile.bio
         self.loginNameLabel.text = profile.loginName
+    }
+    
+    @IBAction private func didTapLogoutButton(_ sender: Any) {
+        let alert = UIAlertController(
+            title: "До новых встреч!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert)
+        
+        let confirmExitAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            presenter.clean()
+            self.present(SplashViewController(), animated: true, completion: nil)
+        }
+        
+        let cancelExitAction = UIAlertAction(title: "Нет", style: .default) { _ in }
+        
+        alert.addAction(confirmExitAction)
+        alert.addAction(cancelExitAction)
+        
+        self.present(alert, animated: true)
     }
 }

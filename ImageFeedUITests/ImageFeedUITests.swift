@@ -7,11 +7,13 @@
 
 import XCTest
 
-private let emailLogin = ""
-private let password = ""
-
 class ImageFeedUITests: XCTestCase {
     private let app = XCUIApplication()
+    
+    private let emailLogin = ""
+    private let password = ""
+    private let nameLabel = "Vladimir Bogomolov"
+    private let loginNameLabel = "@bva23"
     
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -81,8 +83,8 @@ class ImageFeedUITests: XCTestCase {
         sleep(3)
         app.tabBars.buttons.element(boundBy: 1).tap()
         
-        XCTAssertTrue(app.staticTexts["Vladimir Bogomolov"].exists)
-        XCTAssertTrue(app.staticTexts["@bva23"].exists)
+        XCTAssertTrue(app.staticTexts["\(nameLabel)"].exists)
+        XCTAssertTrue(app.staticTexts["\(loginNameLabel)"].exists)
         
         app.buttons["LogoutButton"].tap()
         

@@ -66,7 +66,7 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     func performBatchUpdate(with indexPaths: [IndexPath]) {
         tableView.performBatchUpdates {
             tableView.insertRows(at: indexPaths, with: .automatic)
-        } completion: { _ in }
+        }
     }
     
     func showLikeError(_ error: Error) {
